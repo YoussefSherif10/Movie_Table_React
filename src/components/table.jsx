@@ -2,6 +2,8 @@ import React, {Component} from "react";
 import {getMovies, deleteMovie} from "../services/fakeMovieService";
 import "bootstrap/dist/css/bootstrap.css"
 import button from "bootstrap/js/src/button";
+import Like from "./common/like";
+import "font-awesome/css/font-awesome.css"
 
 class Table extends Component {
     state = {
@@ -47,6 +49,7 @@ class Table extends Component {
                             <th scope="col">Stock</th>
                             <th scope="col">Rate</th>
                             <th scope="col"></th>
+                            <th scope="col"></th>
                         </tr>
                         </thead>
                         <tbody>
@@ -57,6 +60,10 @@ class Table extends Component {
                                     <td>{movie.genre.name}</td>
                                     <td>{movie.numberInStock}</td>
                                     <td>{movie.dailyRentalRate}</td>
+                                    <td> <Like key={movie._id}
+                                               liked={movie.liked}
+                                               onClick={() => this.handleLike(movie)}
+                                    /> </td>
                                     <td><button className="btn btn-danger" onClick={() => this.handleDelete(movie._id)}>
                                         Delete
                                     </button></td>
@@ -74,6 +81,15 @@ class Table extends Component {
         deleteMovie(id);
         this.setState({movies: getMovies()})
     }
+
+    handleLike = movie => {
+        const movies = [...this.state.movies]; // copy the movies from state
+        const index = movies.indexOf(movie);   // get the index of the wanted movie
+        movie.liked = !movie.liked;            // toggle the liked property
+        movies[index] = movie;                 // change that in the copied list
+        this.setState({movies});
+    }
+
 }
 
 export default Table;
