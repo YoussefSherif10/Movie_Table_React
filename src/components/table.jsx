@@ -7,6 +7,7 @@ import {paginate} from "../utils/paginate";
 import List from "./common/list";
 import {getGenres} from "../services/fakeGenreService";
 import MoviesTable from "./moviesTable";
+import _ from 'lodash'
 
 class Table extends Component {
     state = {
@@ -15,6 +16,7 @@ class Table extends Component {
         pageSize: 4,
         currentPage: 1,
         selectedItem: 0,
+        sortColumn: {path: 'title', order: 'asc'},
     };
 
     componentDidMount() {
@@ -29,8 +31,12 @@ class Table extends Component {
             ? this.state.movies.filter(m => m.genre._id === this.state.selectedItem._id)
             : this.state.movies ;
 
+        // sorting movies
+        const sorted = _.orderBy(filtered, [this.state.sortColumn.path], [this.state.sortColumn.order]);
+
         // get the movies in a single page
-        const movies = paginate(filtered, this.state.currentPage, this.state.pageSize);
+        const movies = paginate(sorted, this.state.currentPage, this.state.pageSize);
+
         return (
             <div className="mx-auto p-4 py-md-5 row">
                 <div className="col-2">
@@ -47,6 +53,7 @@ class Table extends Component {
                                 movies={movies}
                                 onDelete={this.handleDelete}
                                 onLike={this.handleLike}
+                                onSort={this.handleSort}
                             />
                             <Pagination
                                 itemCount={filtered.length}
@@ -93,6 +100,18 @@ class Table extends Component {
 
     handleGenreSelect = genre => {
         this.setState({selectedItem: genre , currentPage: 1});
+    }
+
+    handleSort = path => {
+        const sortColumn = {...this.state.sortColumn};
+        if(sortColumn.path === path){
+            sortColumn.order = (sortColumn.order === 'asc') ? 'desc' : 'asc' ;
+        }
+        else {
+            sortColumn.path = path ;
+            sortColumn.order = 'asc' ;
+        }
+        this.setState({sortColumn});
     }
 
 }
