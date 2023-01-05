@@ -5,6 +5,8 @@ import button from "bootstrap/js/src/button";
 const MoviesTable = props => {
     const {movies, onDelete, onLike} = props;
 
+    if(movies.length === 0) return ;
+
     return (
         <table className="table table-striped table-sm">
             <thead>
