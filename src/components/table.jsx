@@ -6,40 +6,46 @@ import Like from "./common/like";
 import "font-awesome/css/font-awesome.css"
 import Pagination from "./common/pagination";
 import {paginate} from "../utils/paginate";
+import List from "./common/list";
+import {getGenres} from "../services/fakeGenreService";
 
 class Table extends Component {
     state = {
-        movies: getMovies(),
+        movies: [],
+        genres: [],
         pageSize: 4,
         currentPage: 1,
+        selectedItem: 0,
     };
 
-    render() {
-        // destructuring the state for cleaner code
-        const {pageSize, currentPage} = this.state;
-        const {length: count} = this.state.movies;
+    componentDidMount() {
+        // in a real application we would need to get these value from the DB so
+        // we get them in that hook right after mounting
+        this.setState({movies: getMovies(), genres: getGenres()});
+    }
 
+    render() {
         return (
-            <div className="col-lg-8 mx-auto p-4 py-md-5">
-                <main>
-                    {this.titleText()}
-                    {this.showingMovies()}
-                    <Pagination
-                        itemCount={count}
-                        pageSize={pageSize}
-                        onPageChange={this.handlePageChange}
-                        currentPage={currentPage}
+            <div className="mx-auto p-4 py-md-5 row">
+                <div className="col-2">
+                    <List
+                        listGroup={this.state.genres}
+                        onItemSelect={this.handleGenreSelect}
+                        selectedItem={this.state.selectedItem}
                     />
+                </div>
+                <main className="col-7">
+                    {this.showingMovies()}
                 </main>
             </div>
         );
     }
 
-    titleText = () => {
-        if(this.state.movies.length > 1) {
-            return <h1>Showing {this.state.movies.length} movies in the database.</h1>
+    titleText = (list) => {
+        if(list.length > 1) {
+            return <h1>Showing {list.length} movies in the database.</h1>
         }
-        else if (this.state.movies.length === 1){
+        else if (list.length === 1){
             return <h1>Showing 1 movie in the database.</h1>
         }
         else {
@@ -48,14 +54,21 @@ class Table extends Component {
     }
 
     showingMovies = () => {
+        // filtering movies according to their genres
+        const filtered = this.state.selectedItem
+            ? this.state.movies.filter(m => m.genre._id === this.state.selectedItem._id)
+            : this.state.movies ;
+
+        // get the movies in a single page
+        const movies = paginate(filtered, this.state.currentPage, this.state.pageSize);
+
         if(this.state.movies.length === 0){
             return ;
         }
 
-        // get the movies in a single page
-        const movies = paginate(this.state.movies, this.state.currentPage, this.state.pageSize);
-
         return (
+            <React.Fragment>
+                {this.titleText(filtered)}
             <div className="table-responsive">
                 <table className="table table-striped table-sm">
                     <thead>
@@ -88,7 +101,14 @@ class Table extends Component {
                     })}
                     </tbody>
                 </table>
+                <Pagination
+                    itemCount={filtered.length}
+                    pageSize={this.state.pageSize}
+                    onPageChange={this.handlePageChange}
+                    currentPage={this.state.currentPage}
+                />
             </div>
+            </React.Fragment>
         );
     }
 
@@ -109,6 +129,10 @@ class Table extends Component {
 
     handlePageChange = page => {
         this.setState({currentPage: page});
+    }
+
+    handleGenreSelect = genre => {
+        this.setState({selectedItem: genre , currentPage: 1});
     }
 
 }
