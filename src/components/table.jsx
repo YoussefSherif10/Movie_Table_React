@@ -20,7 +20,7 @@ class Table extends Component {
     };
 
     componentDidMount() {
-        // in a real application we would need to get these value from the DB so
+        // in a real application we would need to get these value from the DB, so
         // we get them in that hook right after mounting
         this.setState({movies: getMovies(), genres: getGenres()});
     }
