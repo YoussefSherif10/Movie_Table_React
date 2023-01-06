@@ -2,6 +2,7 @@ import React, {Component} from "react";
 import Like from "./common/like";
 import button from "bootstrap/js/src/button";
 import TableHeader from "./common/tableHeader";
+import TableBody from "./common/tableBody";
 
 class MoviesTable extends Component {
     // I define it here not in the state as it doesn't change through the program
@@ -10,8 +11,16 @@ class MoviesTable extends Component {
         { path: "genre.name", label: "Genre"},
         { path: "numberInStock", label: "Stock"},
         { path: "dailyRentalRate", label: "Rate"},
-        { key: "like"},
-        { key: "delete" },
+        {
+            key: "like",
+            content: item => <Like liked={item.liked} onClick={() => this.props.onLike(item)} />
+        },
+        {
+            key: "delete",
+            content: item => <button className="btn btn-danger" onClick={() => this.props.onDelete(item._id)}>
+                Delete
+            </button>
+        },
     ];
     render() {
         const {movies, onDelete, onLike, sortColumn, onSort} = this.props;
@@ -25,26 +34,12 @@ class MoviesTable extends Component {
                     sortColumn={sortColumn}
                     onSort={onSort}
                 />
-                <tbody>
-                {movies.map( movie => {
-                    return (
-                        <tr key={movie._id}>
-                            <td>{movie.title}</td>
-                            <td>{movie.genre.name}</td>
-                            <td>{movie.numberInStock}</td>
-                            <td>{movie.dailyRentalRate}</td>
-                            <td> <Like id={movie._id}
-                                       liked={movie.liked}
-                                       onClick={() => onLike(movie)}
-                            /> </td>
-                            <td><button className="btn btn-danger"
-                                        onClick={() => onDelete(movie._id)}>
-                                Delete
-                            </button></td>
-                        </tr>
-                    );
-                })}
-                </tbody>
+                <TableBody
+                    data={movies}
+                    onDelete={onDelete}
+                    onLike={onLike}
+                    columns={this.columns}
+                />
             </table>
         );
     }
