@@ -26,16 +26,25 @@ class Table extends Component {
     }
 
     render() {
+        // state destructure
+        const {
+            movies: allMovies,
+            selectedItem,
+            currentPage,
+            pageSize,
+            sortColumn
+        } = this.state;
+
         // filtering movies according to their genres
-        const filtered = this.state.selectedItem
-            ? this.state.movies.filter(m => m.genre._id === this.state.selectedItem._id)
-            : this.state.movies ;
+        const filtered = selectedItem
+            ? allMovies.filter(m => m.genre._id === selectedItem._id)
+            : allMovies ;
 
         // sorting movies
-        const sorted = _.orderBy(filtered, [this.state.sortColumn.path], [this.state.sortColumn.order]);
+        const sorted = _.orderBy(filtered, [sortColumn.path], [sortColumn.order]);
 
         // get the movies in a single page
-        const movies = paginate(sorted, this.state.currentPage, this.state.pageSize);
+        const movies = paginate(sorted, currentPage, pageSize);
 
         return (
             <div className="mx-auto p-4 py-md-5 row">
@@ -43,7 +52,7 @@ class Table extends Component {
                     <List
                         listGroup={this.state.genres}
                         onItemSelect={this.handleGenreSelect}
-                        selectedItem={this.state.selectedItem}
+                        selectedItem={selectedItem}
                     />
                 </div>
                 <main className="col-7">
@@ -51,15 +60,16 @@ class Table extends Component {
                         <div className="table-responsive">
                             < MoviesTable
                                 movies={movies}
+                                sortColumn={sortColumn}
                                 onDelete={this.handleDelete}
                                 onLike={this.handleLike}
                                 onSort={this.handleSort}
                             />
                             <Pagination
                                 itemCount={filtered.length}
-                                pageSize={this.state.pageSize}
+                                pageSize={pageSize}
                                 onPageChange={this.handlePageChange}
-                                currentPage={this.state.currentPage}
+                                currentPage={currentPage}
                             />
                         </div>
                 </main>
@@ -102,15 +112,7 @@ class Table extends Component {
         this.setState({selectedItem: genre , currentPage: 1});
     }
 
-    handleSort = path => {
-        const sortColumn = {...this.state.sortColumn};
-        if(sortColumn.path === path){
-            sortColumn.order = (sortColumn.order === 'asc') ? 'desc' : 'asc' ;
-        }
-        else {
-            sortColumn.path = path ;
-            sortColumn.order = 'asc' ;
-        }
+    handleSort = sortColumn => {
         this.setState({sortColumn});
     }
 
