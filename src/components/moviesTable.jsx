@@ -1,8 +1,7 @@
 import React, {Component} from "react";
 import Like from "./common/like";
 import button from "bootstrap/js/src/button";
-import TableHeader from "./common/tableHeader";
-import TableBody from "./common/tableBody";
+import GenericTable from "./common/genericTable";
 
 class MoviesTable extends Component {
     // I define it here not in the state as it doesn't change through the program
@@ -28,19 +27,12 @@ class MoviesTable extends Component {
         if(movies.length === 0) return ;
 
         return (
-            <table className="table table-striped table-sm">
-                <TableHeader
-                    columns={this.columns}
-                    sortColumn={sortColumn}
-                    onSort={onSort}
-                />
-                <TableBody
-                    data={movies}
-                    onDelete={onDelete}
-                    onLike={onLike}
-                    columns={this.columns}
-                />
-            </table>
+            <GenericTable
+                columns={this.columns}
+                sortColumn={sortColumn}
+                onSort={onSort}
+                data={movies}
+            />
         );
     }
 }
