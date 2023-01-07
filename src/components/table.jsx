@@ -48,14 +48,14 @@ class Table extends Component {
 
         return (
             <div className="mx-auto p-4 py-md-5 row">
-                <div className="col-2">
+                <div className="col-3">
                     <List
                         listGroup={this.state.genres}
                         onItemSelect={this.handleGenreSelect}
                         selectedItem={selectedItem}
                     />
                 </div>
-                <main className="col-7">
+                <main className="col-9">
                         {this.titleText(filtered)}
                         <div className="table-responsive">
                             < MoviesTable
