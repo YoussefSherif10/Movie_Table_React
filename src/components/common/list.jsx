@@ -2,7 +2,7 @@ import React from "react";
 
 const List = ({onItemSelect, listGroup, textProperty, valueProperty, selectedItem}) => {
     return (
-        <ul className="list-group ">
+        <ul className="list-group">
             <li onClick={() => onItemSelect(0)}
                 className={ selectedItem === 0 ? "list-group-item active" : "list-group-item"}
                 style={{cursor: "pointer"}}>

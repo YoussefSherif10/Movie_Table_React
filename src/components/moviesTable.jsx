@@ -2,11 +2,15 @@ import React, {Component} from "react";
 import Like from "./common/like";
 import button from "bootstrap/js/src/button";
 import GenericTable from "./common/genericTable";
+import {Link} from "react-router-dom";
 
 class MoviesTable extends Component {
     // I define it here not in the state as it doesn't change through the program
     columns = [
-        { path: "title", label: "Title"},
+        { path: "title",
+            label: "Title",
+            content: movie => <Link to={`/movies/${movie._id}`}>{movie.title}</Link>
+        },
         { path: "genre.name", label: "Genre"},
         { path: "numberInStock", label: "Stock"},
         { path: "dailyRentalRate", label: "Rate"},

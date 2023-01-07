@@ -6,6 +6,7 @@ import {Route , Switch, Redirect} from 'react-router-dom'
 import Customer from "./components/customer";
 import Rental from "./components/rental";
 import NotFound from "./components/notFound";
+import MovieForm from "./components/movieForm";
 
 function App() {
   return (
@@ -15,11 +16,12 @@ function App() {
 
               <div className="starter-template">
                   <Switch>
+                      <Route path="/movies/:id" component={MovieForm} />
                       <Route path="/movies" component={Table} />
                       <Route path="/customers" component={Customer} />
                       <Route path="/rentals" component={Rental} />
                       <Route path="/not-found" component={NotFound} />
-                      <Redirect from="/" to="/movies" />
+                      <Redirect from="/" exact to="/movies" />
                       <Redirect to="/not-found" />
                   </Switch>
               </div>
