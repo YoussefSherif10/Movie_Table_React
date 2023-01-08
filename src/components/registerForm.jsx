@@ -16,7 +16,7 @@ class RegisterForm extends Form {
     // define a schema for the form fields
     schema = {
         email: joi.string().email().required().label('Email'),
-        password: joi.string().required().label('Password'),
+        password: joi.string().min(5).required().label('Password'),
         name: joi.string().required().label('Username'),
     }
 
