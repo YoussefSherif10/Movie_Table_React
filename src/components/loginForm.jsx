@@ -1,4 +1,5 @@
 import React, {Component} from "react";
+import Input from "./common/input";
 
 class LoginForm extends Component {
     state = {
@@ -8,20 +9,23 @@ class LoginForm extends Component {
         },
     };
     render() {
+        const {account} = this.state ;
         return (
             <React.Fragment>
             <h1>Login</h1>
             <form className="col-5 forms" onSubmit={this.handleSubmit}>
-                <div className="form-group">
-                    <label htmlFor="username">Username</label>
-                    <input type="text" className="form-control" id="username" aria-describedby="emailHelp"
-                           placeholder="Enter username" value={this.state.account.username}
-                           onChange={this.handleChange}/>
-                </div>
-                <div className="form-group">
-                    <label htmlFor="password">Password</label>
-                    <input type="password" className="form-control" id="password" placeholder="Password"/>
-                </div>
+                <Input
+                    type="text"
+                    name="username"
+                    onChange={this.handleChange}
+                    value={account.username}
+                />
+                <Input
+                    name="password"
+                    onChange={this.handleChange}
+                    type="password"
+                    value={account.password}
+                />
                 <button type="submit" className="btn btn-primary">Login</button>
             </form>
             </React.Fragment>
@@ -35,9 +39,9 @@ class LoginForm extends Component {
         console.log('submited');
     }
 
-    handleChange = e => {
+    handleChange = ({currentTarget: input}) => {
         const account = {...this.state.account};
-        account.username = e.currentTarget.value;
+        account[input.name] = input.value;
         this.setState({account});
     }
 }
