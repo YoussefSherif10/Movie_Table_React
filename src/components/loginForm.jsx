@@ -1,10 +1,11 @@
-import React, {Component} from "react";
+import React from "react";
 import Input from "./common/input";
 import joi from 'joi-browser'
+import Form from "./common/form";
 
-class LoginForm extends Component {
+class LoginForm extends Form {
     state = {
-        account: {
+        data: {
           username: '',
           password: '',
         },
@@ -19,7 +20,7 @@ class LoginForm extends Component {
     }
 
     render() {
-        const {account, errors} = this.state ;
+        const {data, errors} = this.state ;
         return (
             <React.Fragment>
             <h1>Login</h1>
@@ -28,59 +29,20 @@ class LoginForm extends Component {
                     type="text"
                     name="username"
                     onChange={this.handleChange}
-                    value={account.username}
+                    value={data.username}
                     error={errors.username}
                 />
                 <Input
                     name="password"
                     onChange={this.handleChange}
                     type="password"
-                    value={account.password}
+                    value={data.password}
                     error={errors.password}
                 />
                 <button type="submit" className="btn btn-primary">Login</button>
             </form>
             </React.Fragment>
         );
-    }
-
-    validate = () => {
-        const options = {abortEarly: false};
-        const {account} = this.state;
-        const {error} = joi.validate(account, this.schema, options);
-        if(!error) return {};
-
-        const errors = {};
-        error.details.map(item => errors[item.path[0]] = item.message);
-        return errors;
-    }
-
-    validateProperty = ({name, value}) => {
-        const obj = {[name]: value};
-        const schema = {[name]: this.schema[name]}
-        const {error} = joi.validate(obj, schema);
-        return (error) ? error.details[0].message : null ;
-    }
-
-    handleSubmit = e => {
-        e.preventDefault();     // prevents the default behaviour [full reload]
-
-        const errors = this.validate();
-        console.log(errors);
-        this.setState({errors});
-
-        // then we should call the server to save the changes then redirect
-    }
-
-    handleChange = ({currentTarget: input}) => {
-        const errors = {...this.state.errors};
-        const errorMessage = this.validateProperty(input);
-        if(errorMessage) errors[input.name] = errorMessage;
-        else delete errors[input.name];
-
-        const account = {...this.state.account};
-        account[input.name] = input.value;
-        this.setState({account, errors});
     }
 }
 
